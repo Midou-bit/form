@@ -5,7 +5,8 @@ function App() {
   const {
     register,
     handleSubmit,
-    formState: { errors }
+    formState: { errors },
+    reset
   } = useForm({
     defaultValues: {
       name: '',
@@ -16,7 +17,8 @@ function App() {
   });
 
   const onSubmit = (data) => {
-    console.log('Donnees du formulaire :', data);
+    console.log('Données du formulaire :', data);
+    reset(); // ✅ Reset après soumission
   };
 
   return (
@@ -27,11 +29,13 @@ function App() {
           <Form.Label>Nom</Form.Label>
           <Form.Control
             type="text"
-            {...register('name', { required: true })}
-            isInvalid={errors.name}
+            {...register('name', {
+              required: 'Le nom est requis.'
+            })}
+            isInvalid={!!errors.name}
           />
           <Form.Control.Feedback type="invalid">
-            Ce champ est requis.
+            {errors.name?.message}
           </Form.Control.Feedback>
         </Form.Group>
 
@@ -39,11 +43,13 @@ function App() {
           <Form.Label>Date due</Form.Label>
           <Form.Control
             type="date"
-            {...register('dueDate', { required: true })}
-            isInvalid={errors.dueDate}
+            {...register('dueDate', {
+              required: 'La date est requise.'
+            })}
+            isInvalid={!!errors.dueDate}
           />
           <Form.Control.Feedback type="invalid">
-            Ce champ est requis.
+            {errors.dueDate?.message}
           </Form.Control.Feedback>
         </Form.Group>
 
@@ -65,7 +71,7 @@ function App() {
         </Form.Group>
 
         <Button variant="primary" type="submit">
-          Ajouter la tache
+          Ajouter la tâche
         </Button>
       </Form>
     </Container>

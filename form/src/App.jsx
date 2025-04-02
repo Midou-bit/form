@@ -2,9 +2,6 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { Container, Form, Button } from 'react-bootstrap';
-import dayjs from 'dayjs';
-
-const today = dayjs().format('DD/MM/YYYY');
 
 const schema = yup.object().shape({
   name: yup
@@ -14,12 +11,14 @@ const schema = yup.object().shape({
     .required('Le nom est requis.'),
   dueDate: yup
     .string()
-    .matches(/^\d{2}\/\d{2}\/\d{4}$/, 'Format attendu : jj/mm/aaaa')
+    .matches(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[0-2])\/\d{4}$/, 'Format attendu : jj/mm/aaaa')
     .test('valid-date', 'La date ne peut pas être antérieure à aujourd’hui.', (value) => {
       if (!value) return false;
       const [jour, mois, annee] = value.split('/');
-      const date = dayjs(`${annee}-${mois}-${jour}`);
-      return date.isValid() && date.isSameOrAfter(dayjs(), 'day');
+      const date = new Date(`${annee}-${mois}-${jour}`);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return date instanceof Date && !isNaN(date) && date >= today;
     })
     .required('La date est requise.'),
   priority: yup

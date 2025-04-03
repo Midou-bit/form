@@ -15,10 +15,10 @@ const schema = yup.object().shape({
     .test('valid-date', 'La date ne peut pas être antérieure à aujourd’hui.', (value) => {
       if (!value) return false;
       const [jour, mois, annee] = value.split('/');
-      const date = new Date(`${annee}-${mois}-${jour}`);
+      const date = new Date(annee, mois - 1, jour);
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      return date instanceof Date && !isNaN(date) && date >= today;
+      return date >= today;
     })
     .required('La date est requise.'),
   priority: yup
